@@ -25,6 +25,7 @@ import springApp.persistence.repositories.spring.interfaces.IUserSpringRepositor
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +69,7 @@ public class AuthServiceTests {
         loginDto.setPhoneNumber(USER_PHONE);
         Mockito.doReturn(Optional.of(usersList.get(0))).when(userRepository).getByPhoneNumber(any(String.class));
         Mockito.doReturn(true).when(passwordEncoder).matches(any(String.class),any(String.class));
-        Mockito.doReturn(ACCESS_TOKEN).when(tokenService).generateToken(any(User.class));
+        Mockito.doReturn(CompletableFuture.completedFuture(ACCESS_TOKEN)).when(tokenService).generateToken(any(User.class));
         IAuthService service = new AuthService(userRepository, passwordEncoder, tokenService);
         Assert.isTrue(ACCESS_TOKEN == service.login(loginDto).get(),"Логин произошёл");
     }
